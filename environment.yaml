@@ -1,0 +1,29 @@
+name: fast_back
+channels:
+    - conda-forge
+    - defaults
+    
+dependencies:
+    - python=3.12
+    - sqlalchemy>=2.0.30
+    - bcrypt
+    - pydantic>=2.7.4
+    - python-dotenv=1.0.1
+
+    - pip
+    - pip:
+        - asyncio
+        - aioboto3
+        - fastapi==0.136.1
+        - uvicorn==0.30.1
+        - httpx
+        - pyjwt
+        - pillow
+        - python-multipart
+        - passlib[bcrypt]
+        - redis
+        - python-jose[cryptography]
+        - psycopg2-binary
+        - asyncpg
+        - greenlet
+        - psycopg[binary]
