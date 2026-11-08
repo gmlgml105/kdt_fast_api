@@ -45,3 +45,8 @@ class PostListResponseDTO(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PostUpdateDTO(BaseModel):
+    post_title: str
+    post_content: str
