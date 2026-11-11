@@ -3,6 +3,7 @@ from app.services.member_service import get_member_service, MemberService
 from app.enums.member_enum import MemberProvider
 from app.schemas.member_schema import MemberCreateDTO, MemberClaimDTO, MemberUpdateDTO
 from app.schemas.common_schema import ApiResponseDTO
+from app.dependencies.auth_dependency import get_current_member
 
 router = APIRouter()
 
@@ -21,9 +22,8 @@ async def check_member(
         message="중복되지 않은 사용자",
     )
 
-
 @router.post("/join",
-    summary="로컬 회원 가입",
+    summary="회원 가입",
     response_model=ApiResponseDTO,
     responses={
         409: {
@@ -42,9 +42,9 @@ async def join(
     member: MemberCreateDTO, 
     member_service: MemberService = Depends(get_member_service)
 ):
-    pass
-    # provider는 controller 담당
-    member.member_provider = MemberProvider.LOCAL.value
+    if not member.member_provider:
+        member.member_provider = MemberProvider.LOCAL.value
+
     member_claim: MemberClaimDTO = await member_service.join(member)
 
     return ApiResponseDTO(
@@ -52,7 +52,6 @@ async def join(
         message="회원가입 성공",
         data=member_claim
     )
-
 
 @router.get(
     "/{id}",
@@ -68,7 +67,6 @@ async def get_member_by_id(
         message="회원 조회 성공",
         data=found_member
     )
-
 
 # Query(...): 쿼리스트링으로 데이터를 받기, (...):필수
 # get방식 값을 전송하는 방법 -> ?key=value&key=value
@@ -88,7 +86,6 @@ async def get_member_by_email_and_provider(
         message="회원 조회 성공",
         data=found_member
     )
-
 
 # "": "/members"
 # @router.get(
@@ -121,7 +118,6 @@ async def get_members(
         data=page_result
     )
 
-
 @router.put(
     "/{id}",
     summary="회원 정보 수정",
@@ -140,7 +136,6 @@ async def update_member(
         data=updated_member
     )
 
-
 @router.delete(
     "/{id}",
     summary="회원 탈퇴",
@@ -153,6 +148,27 @@ async def withdraw(id: int, member_service: MemberService = Depends(get_member_s
         success=True,
         message="회원 탈퇴 완료"
     )
+
+# access-token: 사용자를 전달하는 서비스
+
+@router.post(
+    "/me",
+    summary="Access Token으로 회원정보 조회",
+    response_model=ApiResponseDTO,
+)
+async def me(
+    current_member: MemberClaimDTO = Depends(get_current_member),
+    member_service: MemberService = Depends(get_member_service)
+):
+    member_id = current_member.id
+    found_member = await member_service.get_member_by_id(member_id)
+
+    return ApiResponseDTO(
+        success=True,
+        message="회원 정보 조회 완료",
+        data=found_member
+    )
+    
 
 
 

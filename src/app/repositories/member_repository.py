@@ -5,7 +5,7 @@ from fastapi import Depends
 # 모델, ORM
 from app.models.member_model import Member
 from app.schemas.member_schema import (
-    MemberCreateDTO, MemberClaimDTO, MemberUpdateDTO
+    MemberCreateDTO, MemberClaimDTO
 )
 from sqlalchemy import insert, select, update, delete, func, exists
 
@@ -51,7 +51,6 @@ class MemberRepository:
         )
 
         result = await self.db.execute(query)
-        await self.db.commit()
 
         # 필요한 값을 리턴(id, email, provider)
         id, member_email, member_provider = result.first()
@@ -64,8 +63,8 @@ class MemberRepository:
 
         # dict -> pydantic
         claim_dto = MemberClaimDTO.model_validate(payload)
+        await self.db.commit()
         return claim_dto
-
 
     # 3. 소셜 회원가입
     # 4. 회원 정보 조회(id) 
@@ -74,7 +73,6 @@ class MemberRepository:
         result = await self.db.execute(query)
         found_member = result.scalar_one_or_none()
         return found_member
-
 
     # 5. 회원 정보 조회(email, provider)
     async def find_member_by_email_and_provider(self, member_email: str, member_provider: str):
@@ -141,7 +139,6 @@ class MemberRepository:
         updated_member = result.scalar_one_or_none()
         return updated_member
 
-
     # 8. 회원 삭제
     async def delete_member(self, id: int) -> bool:
         query = (
@@ -151,8 +148,6 @@ class MemberRepository:
         result = await self.db.execute(query)
         await self.db.commit()
         return result.rowcount > 0
-
-
 
 
 # 주입 팩토리 메서드

@@ -21,6 +21,7 @@ class Member(Base):
     member_name: Mapped[str | None] = mapped_column(Text)
     member_age: Mapped[int | None] = mapped_column(Integer)
     member_profile: Mapped[str | None] = mapped_column(Text, default="/members/default.jpg")
+    member_phone: Mapped[str | None] = mapped_column(Text)
     member_provider_id: Mapped[str | None] = mapped_column(Text, unique=True)
     member_provider: Mapped[MemberProvider] = mapped_column(
         SQLEnum(MemberProvider, native_enum=False), 
