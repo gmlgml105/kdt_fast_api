@@ -5,6 +5,20 @@ channels:
     
 dependencies:
     - python=3.12
+    # CPU, MPS
+    - pytorch
+    - torchvision
+
+    # CUDA
+    # - pytorch 
+    # - torchvision 
+    # - pytorch-cuda=12.4
+
+    # XPU
+    # - pytorch-xpu
+    # - torchvision
+    # - intel-extension-for-pytorch
+    
     - sqlalchemy>=2.0.30
     - bcrypt
     - pydantic>=2.7.4

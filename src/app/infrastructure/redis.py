@@ -31,5 +31,7 @@ async def start_redis_client(app: FastAPI):
     finally:
         await redis_client.aclose()    # 서버 종료 시 연결 닫기
 
+
+# 의존성 팩토리 주입
 def get_redis_db(request: Request):
     return request.app.state.redis
