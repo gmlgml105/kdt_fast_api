@@ -41,3 +41,6 @@ Thumbs.db
 *.log
 
 *.claude
+
+node_modules/
+_backup_before_claude_fix/node_modules/
